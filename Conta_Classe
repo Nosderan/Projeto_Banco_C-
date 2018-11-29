@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WindowsFormsApp1
+{
+    class Conta
+    {
+        private String nome, email;
+        private long CPF, RG, senha, telefone_fixo, telefone_celular;
+        protected double saldo;
+        public String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
+
+        public Conta()
+        {
+            saldo = 0;
+        }
+   
+        public Conta(double saldoInicial)
+        {
+            saldo = saldoInicial;
+        }
+
+        public void deposit(double valor)
+        {
+            double newSaldo = saldo + valor;
+            saldo = newSaldo;
+        }
+
+        public virtual void saque(double valor)
+        {
+            double newSaldo = saldo - valor;
+            saldo = newSaldo;
+        }
+
+        public double consultaSaldo()
+        {
+            return saldo;
+        }
+    }
+}
