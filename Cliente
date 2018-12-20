@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bank
+{
+    class Cliente
+    {
+        private string Nome;
+        private string CPF;
+        private string Senha;
+
+        public Cliente()
+        {
+            Nome = null;
+            CPF = null;
+            Senha = null;
+        }
+
+        public Cliente(string nome, string cpf, string senha)
+        {
+            Nome = nome;
+            CPF = cpf;
+            Senha = senha;
+        }
+
+        public void ProcessCliente(int escolha)
+        {
+            if (escolha == 1)
+            {
+                Directory.CreateDirectory(@"C:\KElebnve\Contas");
+                File.Create(@"C:\KElebnve\Contas\Conta");
+               
+                Console.Write("\nInsira seu nome: ");
+                string Nome = Console.ReadLine();
+                File.WriteAllText(@"C:\KElebnve\Contas\Conta", Nome);
+
+                Console.Write("\nInsira seu CPF: ");
+                CPF = Convert.ToString(Console.ReadLine());
+                File.WriteAllText(@"C:\KElebnve\Contas\Conta", CPF);
+
+                Console.Write("\nInsira seu senha: ");
+                Senha = Convert.ToString(Console.ReadLine());
+                File.WriteAllText(@"C:\KElebnve\Contas\Conta", Senha);
+
+                Console.WriteLine("Registro realizado com sucesso");
+            }
+
+            else if(escolha == 2)
+            {
+                string conteudo = File.ReadAllText(@"C:\KElebnve\Contas\Conta");
+                Console.WriteLine("Insira seu nome: " + Nome);
+
+
+            }
+        }
+    }
+}
