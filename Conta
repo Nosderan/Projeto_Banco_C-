@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bank
+{
+    class Conta
+    {
+        protected double saldo;
+        public String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
+        String msgsaldo = "\nSaldo atual: R$ ";
+        String welcome = "Bem vindo ao Banco X\n\nO que deseja? 1_Cadastrar\n2_Logar";
+
+        public Conta()
+        {
+            saldo = 0;
+        }
+
+        public Conta(double saldoInicial)
+        {
+            saldo = saldoInicial;
+        }
+
+        public void Deposit(double valor)
+        {
+            double newSaldo = saldo + valor;
+            saldo = newSaldo;
+        }
+
+        public virtual void Saque(double valor)
+        {
+            double newSaldo = saldo - valor;
+            saldo = newSaldo;
+        }
+
+        public double ConsultaSaldo()
+        {
+            return saldo;
+        }
+
+        public void ProcessDeposit(int escolha)
+        {
+            Conta user = new Conta();
+            if (escolha == 1)
+            {
+                Console.WriteLine("\nInsira o valor do depósito: R$ ");
+                double deposito1 = Convert.ToDouble(Console.ReadLine());
+                if (deposito1 < 0)
+                {
+                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do depósito menor que 0.");
+                    return;
+                }
+                user.Deposit(deposito1);
+                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+            }
+
+            else if (escolha == 2)
+            {
+                Console.WriteLine("\nInsira o valor do saque: R$ ");
+                double saque1 = Convert.ToDouble(Console.ReadLine());
+                if (saque1 > saldo)
+                {
+                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do saque maior que seu saldo atual.");
+                    return;
+                }
+                user.Saque(saque1);
+                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+            }
+
+            else if (escolha == 3)
+            {
+                Console.WriteLine(msgsaldo + saldo);
+            }
+
+            else if (escolha == 4)
+            {
+                Console.WriteLine("\nAgradecemos sua visita");
+                return;
+            }
+
+            else
+            {
+                Console.WriteLine(msgerror + welcome);
+            }
+        }
+    }
+}
