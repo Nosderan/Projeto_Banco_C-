@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bank
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Cliente user_cliente = new Cliente();
+            Conta user_conta = new Conta();
+            String welcome = "Bem vindo ao Banco X\n\nO que deseja?\n1_Cadastrar\n2_Logar";
+            String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
+            String msgcont = "\nMais alguma transação?\n\n[Yes]\n[No]\n\n";
+            int escolha_cliente = 0;
+            int escolha_conta = 0;
+
+            while (true)
+            {
+                //string[] Linhas = { "texto da linha 1", "texto da linha 2" };
+                //File.WriteAllText(@"C:\Curso\arq2.txt", Linhas);
+                Console.WriteLine(welcome);
+
+                escolha_cliente = Convert.ToInt32(Console.ReadLine());
+                user_cliente.ProcessCliente(escolha_cliente);
+
+               // user.ProcessDeposit(escolha_process);
+
+                //Console.WriteLine(msgcont);
+
+                int continua = Convert.ToInt32(Console.ReadLine());
+
+                if (continua == 1)
+                    Console.WriteLine("----------------------");
+
+			    else if (continua == 0)
+                    return;
+
+                else
+                    Console.WriteLine(msgerror);
+            }
+        }
+    }
+}
