@@ -31,30 +31,42 @@ namespace Bank
         {
             if (escolha == 1)
             {
-                Directory.CreateDirectory(@"C:\KElebnve\Contas");
-                File.Create(@"C:\KElebnve\Contas\Conta");
-               
+                StreamWriter e = new StreamWriter(@"C:\Contas\Dados.txt");
                 Console.Write("\nInsira seu nome: ");
-                string Nome = Console.ReadLine();
-                File.WriteAllText(@"C:\KElebnve\Contas\Conta", Nome);
+                Nome = Console.ReadLine();
+                e.WriteLine(Nome);
 
                 Console.Write("\nInsira seu CPF: ");
                 CPF = Convert.ToString(Console.ReadLine());
-                File.WriteAllText(@"C:\KElebnve\Contas\Conta", CPF);
+                e.WriteLine(CPF);
 
                 Console.Write("\nInsira seu senha: ");
                 Senha = Convert.ToString(Console.ReadLine());
-                File.WriteAllText(@"C:\KElebnve\Contas\Conta", Senha);
-
-                Console.WriteLine("Registro realizado com sucesso");
+                e.WriteLine(Senha);
+                e.Close();
+                Console.WriteLine("\n------------------Registro realizado com sucesso---------------------\n");
             }
 
-            else if(escolha == 2)
+            else if (escolha == 2)
             {
-                string conteudo = File.ReadAllText(@"C:\KElebnve\Contas\Conta");
-                Console.WriteLine("Insira seu nome: " + Nome);
-
-
+                using (Stream arquivo = File.Open(@"C:\Contas\Dados.txt", FileMode.Open))
+                {
+                    
+                }
+                if (File.Exists(@"C:\Contas\Dados.txt"))
+                {
+                    StreamReader l = new StreamReader(@"C:\Contas\Dados.txt");
+                    Console.Write("\nInsira seu login: ");
+                    string name = Convert.ToString(Console.ReadLine());
+                    name = l.ReadLine();
+                    Console.Write("\nInsira seu CPF: ");
+                    string cpefi = Convert.ToString(Console.ReadLine());
+                    cpefi = l.ReadLine();
+                    Console.Write("\nInsira seu senha: ");
+                    string senha = Convert.ToString(Console.ReadLine());
+                    senha = l.ReadLine();
+                    l.Close();
+                }
             }
         }
     }
