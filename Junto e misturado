@@ -1,0 +1,232 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bank
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Cliente user_cliente = new Cliente();
+            Conta user_conta = new Conta();
+            String welcome = "Bem vindo ao Banco X\n\nO que deseja?\n1_Cadastrar\n2_Logar\n3_Sair\n";
+            //String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
+            //String msgcont = "\nMais alguma transação?\n\n[Yes]\n[No]\n\n";
+            int escolha_cliente = 0;
+            // int escolha_conta = 0;
+
+            do
+            {
+                Console.WriteLine(welcome);
+
+                escolha_cliente = Convert.ToInt32(Console.ReadLine());
+                user_cliente.ProcessCliente(escolha_cliente);
+
+                //Console.WriteLine(escolhas);
+
+                //int continua = Convert.ToInt32(Console.ReadLine());
+
+               // user.ProcessDeposit(escolha_process);
+
+                //Console.WriteLine(msgcont);
+
+               // continua = Convert.ToInt32(Console.ReadLine());
+
+                /*if (continua == 1)
+                    Console.WriteLine("----------------------");
+
+			    else if (continua == 0)
+                    return;
+
+                else
+                    Console.WriteLine(msgerror);*/
+            }while(escolha_cliente != 3);
+        }
+    }
+    
+    class Conta
+    {
+        protected double saldo;
+        public String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
+        String msgsaldo = "\nSaldo atual: R$ ";
+        String welcome = "Bem vindo ao Banco X\n\nO que deseja? 1_Cadastrar\n2_Logar";
+
+        public Conta()
+        {}
+
+        public Conta(double saldoInicial)
+        {
+            saldo = saldoInicial;
+        }
+
+        public void Deposit(double valor)
+        {
+            double newSaldo = saldo + valor;
+            saldo = newSaldo;
+        }
+
+        public virtual void Saque(double valor)
+        {
+            double newSaldo = saldo - valor;
+            saldo = newSaldo;
+        }
+
+        public double ConsultaSaldo()
+        {
+            return saldo;
+        }
+
+        public void ProcessDeposit(int escolha)
+        {
+            Conta user = new Conta();
+            if (escolha == 1)
+            {
+                Console.WriteLine("\nInsira o valor do depósito: R$ ");
+                double deposito1 = Convert.ToDouble(Console.ReadLine());
+                if (deposito1 < 0)
+                {
+                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do depósito menor que 0.");
+                    return;
+                }
+                user.Deposit(deposito1);
+                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+            }
+
+            else if (escolha == 2)
+            {
+                Console.WriteLine("\nInsira o valor do saque: R$ ");
+                double saque1 = Convert.ToDouble(Console.ReadLine());
+                if (saque1 > saldo)
+                {
+                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do saque maior que seu saldo atual.");
+                    return;
+                }
+                user.Saque(saque1);
+                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+            }
+
+            else if (escolha == 3)
+            {
+                Console.WriteLine(msgsaldo + saldo);
+            }
+
+            else if (escolha == 4)
+            {
+                Console.WriteLine("\nAgradecemos sua visita");
+                return;
+            }
+
+            else
+            {
+                Console.WriteLine(msgerror + welcome);
+            }
+        }
+    }
+    
+    class Cliente
+    {
+        Conta user_conta = new Conta();
+        private String Nome;
+        private String CPF;
+        private String Senha;
+        private String escolhas = "[1] Consultar saldo\n[2] Saque\n[3] Depósito\n[4] Sair da conta";
+
+        public Cliente()
+        {
+            Nome = null;
+            CPF = null;
+            Senha = null;
+        }
+
+        public Cliente(string nome, string cpf, string senha)
+        {
+            Nome = nome;
+            CPF = cpf;
+            Senha = senha;
+        }
+
+        public void ProcessCliente(int escolha)
+        {
+            if (escolha == 1)
+            {
+                StreamWriter e = new StreamWriter(@"C:\\Contas\\Dados.txt");
+                Console.Write("\nInsira seu nome: ");
+                Nome = Console.ReadLine();
+                e.WriteLine(Nome);
+
+                Console.Write("\nInsira seu CPF: ");
+                CPF = Convert.ToString(Console.ReadLine());
+                e.WriteLine(CPF);
+
+                Console.Write("\nInsira seu senha: ");
+                Senha = Convert.ToString(Console.ReadLine());
+                e.WriteLine(Senha);
+                e.Close();
+                Console.WriteLine("\n------------------Registro realizado com sucesso---------------------\n");
+            }
+
+            else if (escolha == 2)
+            {
+                string[] arquivo = File.ReadAllLines(@"C:\\Contas\\Dados.txt");
+                if (File.Exists(@"C:\\Contas\\Dados.txt"))
+                {
+                    try
+                    {
+                        using (StreamReader sr = new StreamReader(@"C:\\Contas\\Dados.txt"))
+                        {
+                            Console.Clear();
+                            Console.Write("Nome: ");
+                            String name = Convert.ToString(Console.ReadLine());
+                            
+                            if(name == arquivo[0])
+                            {
+                                Console.Write("CPF: ");
+                                String cpefi = Convert.ToString(Console.ReadLine());
+                                
+                                if(cpefi == arquivo[1])
+                                {
+                                    Console.Write("Senha: ");
+                                    String pass = Convert.ToString(Console.ReadLine());
+                                    
+                                    if(pass == arquivo[2])
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine(escolhas);
+                                        int escolha_conta = Convert.ToInt16(Console.ReadLine());
+                                        if (escolha_conta == 1)
+                                            
+                                    }
+                                }
+                            }
+                            
+                            else
+                            {
+                               Console.WriteLine("ERROR: nome não cadastrado\n");
+                            }
+                        }
+                    }
+                    
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                
+                else
+                {
+                    Console.WriteLine(" O arquivo não foi localizado !");
+                }
+            }
+              
+            else if (escolha == 3)
+            {
+                Console.WriteLine("Bye :)");
+                return;
+            }
+        }
+    }
+}
