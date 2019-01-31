@@ -14,126 +14,124 @@ namespace Bank
             Cliente user_cliente = new Cliente();
             Conta user_conta = new Conta();
             String welcome = "Bem vindo ao Banco X\n\nO que deseja?\n1_Cadastrar\n2_Logar\n3_Sair\n";
-            //String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
-            //String msgcont = "\nMais alguma transação?\n\n[Yes]\n[No]\n\n";
             int escolha_cliente = 0;
-            // int escolha_conta = 0;
 
             do
             {
                 Console.WriteLine(welcome);
-
                 escolha_cliente = Convert.ToInt32(Console.ReadLine());
                 user_cliente.ProcessCliente(escolha_cliente);
-
-                //Console.WriteLine(escolhas);
-
-                //int continua = Convert.ToInt32(Console.ReadLine());
-
-               // user.ProcessDeposit(escolha_process);
-
-                //Console.WriteLine(msgcont);
-
-               // continua = Convert.ToInt32(Console.ReadLine());
-
-                /*if (continua == 1)
-                    Console.WriteLine("----------------------");
-
-			    else if (continua == 0)
-                    return;
-
-                else
-                    Console.WriteLine(msgerror);*/
-            }while(escolha_cliente != 3);
+            } while (escolha_cliente != 3);
         }
     }
+}
     
-    class Conta
+    public class Conta
     {
         protected double saldo;
         public String msgerror = "\nERROR: limite sua escolha a umas das 4 opções";
-        String msgsaldo = "\nSaldo atual: R$ ";
-        String welcome = "Bem vindo ao Banco X\n\nO que deseja? 1_Cadastrar\n2_Logar";
+        public String msgsaldo = "\nSaldo atual: R$ ";
+        public String welcome = "Bem vindo ao Banco X\n\nO que deseja? 1_Cadastrar\n2_Logar";
+
 
         public Conta()
-        {}
+        {
+            saldo = 0;
+        }
 
         public Conta(double saldoInicial)
         {
             saldo = saldoInicial;
         }
 
-        public void Deposit(double valor)
+        public virtual void Deposit(double valor)
         {
-            double newSaldo = saldo + valor;
-            saldo = newSaldo;
+            this.saldo += valor;
         }
 
         public virtual void Saque(double valor)
         {
-            double newSaldo = saldo - valor;
-            saldo = newSaldo;
+            if (valor <= 0)
+            {
+                throw new ContaException("Valor deve ser maior que");
+            }
+
+            else if (saldo - valor <= 0)
+            {
+                throw new ContaException("Saldo insuficiente");
+            }
+
+            this.saldo -= valor;
         }
 
-        public double ConsultaSaldo()
+        public virtual double ConsultaSaldo()
         {
             return saldo;
         }
 
-        public void ProcessDeposit(int escolha)
+        public virtual void ProcessConta(int escolha)
         {
             Conta user = new Conta();
-            if (escolha == 1)
+            try
             {
-                Console.WriteLine("\nInsira o valor do depósito: R$ ");
-                double deposito1 = Convert.ToDouble(Console.ReadLine());
-                if (deposito1 < 0)
+                if (escolha == 1)
                 {
-                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do depósito menor que 0.");
+                    Console.WriteLine("\nInsira o valor do depósito: R$ ");
+                    double deposito1 = Convert.ToDouble(Console.ReadLine());
+                    if (deposito1 < 0)
+                    {
+                        Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do depósito menor que 0.");
+                        return;
+                    }
+                    user.Deposit(deposito1);
+                    Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+                }
+
+                else if (escolha == 2)
+                {
+                    Console.WriteLine("\nInsira o valor do saque: R$ ");
+                    double saque1 = Convert.ToDouble(Console.ReadLine());
+                    if (saque1 > saldo)
+                    {
+                        Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do saque maior que seu saldo atual.");
+                        return;
+                    }
+                    user.Saque(saque1);
+                    Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
+                }
+
+                else if (escolha == 3)
+                {
+                    Console.WriteLine(msgsaldo + saldo);
+                }
+
+                else if (escolha == 4)
+                {
+                    Console.WriteLine("\nAgradecemos sua visita");
                     return;
                 }
-                user.Deposit(deposito1);
-                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
-            }
 
-            else if (escolha == 2)
-            {
-                Console.WriteLine("\nInsira o valor do saque: R$ ");
-                double saque1 = Convert.ToDouble(Console.ReadLine());
-                if (saque1 > saldo)
+                else
                 {
-                    Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do saque maior que seu saldo atual.");
-                    return;
+                    Console.WriteLine(msgerror + welcome);
                 }
-                user.Saque(saque1);
-                Console.WriteLine(msgsaldo + user.ConsultaSaldo() + "\n----------------------");
             }
-
-            else if (escolha == 3)
+            catch (Exception)
             {
-                Console.WriteLine(msgsaldo + saldo);
-            }
 
-            else if (escolha == 4)
-            {
-                Console.WriteLine("\nAgradecemos sua visita");
-                return;
-            }
-
-            else
-            {
-                Console.WriteLine(msgerror + welcome);
             }
         }
     }
+}
+
     
-    class Cliente
+    class Cliente : Conta
     {
         Conta user_conta = new Conta();
         private String Nome;
         private String CPF;
         private String Senha;
-        private String escolhas = "[1] Consultar saldo\n[2] Saque\n[3] Depósito\n[4] Sair da conta";
+        private String escolhas = "[1] Depósito\n[2] Saque\n[3] Consulta saldo\n[4] Sair da conta";
 
         public Cliente()
         {
@@ -151,6 +149,7 @@ namespace Bank
 
         public void ProcessCliente(int escolha)
         {
+            string[] arquivo = File.ReadAllLines(@"C:\\Contas\\Dados.txt");
             if (escolha == 1)
             {
                 StreamWriter e = new StreamWriter(@"C:\\Contas\\Dados.txt");
@@ -171,7 +170,6 @@ namespace Bank
 
             else if (escolha == 2)
             {
-                string[] arquivo = File.ReadAllLines(@"C:\\Contas\\Dados.txt");
                 if (File.Exists(@"C:\\Contas\\Dados.txt"))
                 {
                     try
@@ -181,52 +179,116 @@ namespace Bank
                             Console.Clear();
                             Console.Write("Nome: ");
                             String name = Convert.ToString(Console.ReadLine());
-                            
-                            if(name == arquivo[0])
+
+                            if (name == arquivo[0])
                             {
                                 Console.Write("CPF: ");
                                 String cpefi = Convert.ToString(Console.ReadLine());
-                                
-                                if(cpefi == arquivo[1])
+
+                                if (cpefi == arquivo[1])
                                 {
                                     Console.Write("Senha: ");
                                     String pass = Convert.ToString(Console.ReadLine());
-                                    
-                                    if(pass == arquivo[2])
+
+                                    if (pass == arquivo[2])
                                     {
                                         Console.Clear();
                                         Console.WriteLine(escolhas);
-                                        int escolha_conta = Convert.ToInt16(Console.ReadLine());
-                                        if (escolha_conta == 1)
-                                            
+                                        int escolha_procedimentos_conta = Convert.ToInt16(Console.ReadLine());
+                                        user_conta.ProcessConta(escolha_procedimentos_conta);
                                     }
                                 }
                             }
-                            
+
                             else
                             {
-                               Console.WriteLine("ERROR: nome não cadastrado\n");
+                                Console.WriteLine("ERROR: nome não cadastrado\n");
                             }
                         }
                     }
-                    
+
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
                 }
-                
+
                 else
                 {
                     Console.WriteLine(" O arquivo não foi localizado !");
                 }
             }
-              
+
             else if (escolha == 3)
             {
-                Console.WriteLine("Bye :)");
+                Console.WriteLine("\nAgradecemos sua visita\n");
                 return;
             }
         }
+
+        public override void ProcessConta(int escolha)
+        {
+            Conta user = new Conta();
+            try
+            {
+                if (escolha == 1)
+                {
+                    Console.WriteLine("\nInsira o valor do depósito: R$ ");
+                    double deposito1 = Convert.ToDouble(Console.ReadLine());
+                    if (deposito1 < 0)
+                    {
+                        Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do depósito menor que 0.");
+                        return;
+                    }
+                    user_conta.Deposit(deposito1);
+                    Console.WriteLine(msgsaldo + user_conta.ConsultaSaldo() + "\n----------------------");
+                }
+
+                else if (escolha == 2)
+                {
+                    Console.WriteLine("\nInsira o valor do saque: R$ ");
+                    double saque1 = Convert.ToDouble(Console.ReadLine());
+                    if (saque1 > saldo)
+                    {
+                        Console.WriteLine("\nNão possível fazer a transação. MOTIVO: valor do saque maior que seu saldo atual.");
+                        return;
+                    }
+                    user_conta.Saque(saque1);
+                    Console.WriteLine(msgsaldo + user_conta.ConsultaSaldo() + "\n----------------------");
+                }
+
+                else if (escolha == 3)
+                {
+                    Console.WriteLine(msgsaldo + user_conta.ConsultaSaldo());
+                }
+
+                else if (escolha == 4)
+                {
+                    Console.WriteLine("\nAgradecemos sua visita");
+                    return;
+                }
+
+                else
+                {
+                    Console.WriteLine(msgerror + welcome);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+}
+
+[Serializable]
+    public class ContaException : Exception
+    {
+        public ContaException() { }
+        public ContaException(string message) : base(message) { }
+        public ContaException(string message, Exception inner) : base(message, inner) { }
+        protected ContaException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }
